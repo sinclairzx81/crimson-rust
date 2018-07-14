@@ -30,31 +30,27 @@ mod crimson;
 
 use crimson::{ System, Actor, Sender, Receiver };
 
-/// (thread 0) A sends.
+type Message = &'static str;
+
 struct A;
-impl Actor<u32> for A {
-  fn run(&mut self, sender: Sender<u32>, _: Receiver<u32>) {
-    sender.send("B", 1).unwrap();
-    sender.send("B", 2).unwrap();
-    sender.send("B", 3).unwrap();
+impl Actor<Message> for A {
+  fn run(&mut self, sender: Sender<Message>, _: Receiver<Message>) {
+    sender.send("B", "Hello").unwrap();
+    sender.send("B", "World").unwrap();
   }
 }
 
-/// (thread 1) B receives.
 struct B;
-impl Actor<u32> for B {
-  fn run(&mut self, _: Sender<u32>, receiver: Receiver<u32>) {
+impl Actor<Message> for B {
+  fn run(&mut self, _: Sender<Message>, receiver: Receiver<Message>) {
     for message in receiver {
-      println!("{}", message)
+      println!("B {}", message)
     }
   }
 }
 
 fn main() {
   let mut system = System::new();
-  system.mount("A", A);
-  system.mount("B", B);
-  system.run(|info| {
-    println!("{}", info);
-  });
+
+  system.run(|info| println!("{:?}", info));
 }

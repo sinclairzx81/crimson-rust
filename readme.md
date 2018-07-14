@@ -51,15 +51,15 @@ A call to `.send(address)` will result in a message being dispatched to ONE acto
 struct A;
 impl Actor<u32> for A {
   fn run(&mut self, sender: Sender<u32>, _: Receiver<u32>) {
-    sender.send("B", 1).unwrap(); // to -> 0
-    sender.send("B", 1).unwrap(); // to -> 1
-    sender.send("B", 1).unwrap(); // to -> 2
+    sender.send("B", 1).unwrap(); // to -> B[0]
+    sender.send("B", 1).unwrap(); // to -> B[1]
+    sender.send("B", 1).unwrap(); // to -> B[2]
   }
 }
 ...
-system.mount("B", Box::new(B)); // 0
-system.mount("B", Box::new(B)); // 1
-system.mount("B", Box::new(B)); // 2
+system.mount("B", Box::new(B)); // B[0]
+system.mount("B", Box::new(B)); // B[1]
+system.mount("B", Box::new(B)); // B[2]
 ```
 
 ```
@@ -90,13 +90,13 @@ A call to `.publish(address)` will result in a message being dispatched to ALL a
 struct A;
 impl Actor<u32> for A {
   fn run(&mut self, sender: Sender<u32>, _: Receiver<u32>) {
-    sender.publish("B", 1).unwrap();
+    sender.publish("B", 1).unwrap(); // to -> [B[0], B[1], B[2]]
   }
 }
 ...
-system.mount("B", Box::new(B)); // 0
-system.mount("B", Box::new(B)); // 1
-system.mount("B", Box::new(B)); // 2
+system.mount("B", Box::new(B)); // B[0]
+system.mount("B", Box::new(B)); // B[1]
+system.mount("B", Box::new(B)); // B[2]
 ```
 
 ```

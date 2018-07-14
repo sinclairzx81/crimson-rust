@@ -51,7 +51,9 @@ A call to `.send(address)` will result in a message being dispatched to ONE acto
 struct A;
 impl Actor<u32> for A {
   fn run(&mut self, sender: Sender<u32>, _: Receiver<u32>) {
-    sender.send("B", 1).unwrap();
+    sender.send("B", 1).unwrap(); // to -> 0
+    sender.send("B", 1).unwrap(); // to -> 1
+    sender.send("B", 1).unwrap(); // to -> 2
   }
 }
 ...

@@ -51,6 +51,7 @@ impl Actor<Message> for B {
 
 fn main() {
   let mut system = System::new();
-
+  system.mount("A", Box::new(A));
+  system.mount("B", Box::new(B));
   system.run(|info| println!("{:?}", info));
 }

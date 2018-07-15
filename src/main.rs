@@ -28,30 +28,30 @@ THE SOFTWARE.
 
 mod crimson;
 
-use crimson::{ System, Actor, Sender, Receiver };
+use crimson::{Actor, Receiver, Sender, System};
 
 type Message = &'static str;
 
 struct A;
 impl Actor<Message> for A {
-  fn run(&mut self, sender: Sender<Message>, _: Receiver<Message>) {
-    sender.send("B", "Hello").unwrap();
-    sender.send("B", "World").unwrap();
-  }
+    fn run(&mut self, sender: Sender<Message>, _: Receiver<Message>) {
+        sender.send("B", "Hello").unwrap();
+        sender.send("B", "World").unwrap();
+    }
 }
 
 struct B;
 impl Actor<Message> for B {
-  fn run(&mut self, _: Sender<Message>, receiver: Receiver<Message>) {
-    for message in receiver {
-      println!("B {}", message)
+    fn run(&mut self, _: Sender<Message>, receiver: Receiver<Message>) {
+        for message in receiver {
+            println!("B {}", message)
+        }
     }
-  }
 }
 
 fn main() {
-  let mut system = System::new();
-  system.mount("A", Box::new(A));
-  system.mount("B", Box::new(B));
-  system.run(|info| println!("{:?}", info));
+    let mut system = System::new();
+    system.mount("A", Box::new(A));
+    system.mount("B", Box::new(B));
+    system.run(|info| println!("{:?}", info));
 }

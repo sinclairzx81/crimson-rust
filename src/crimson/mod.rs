@@ -26,10 +26,9 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-
 mod system;
 
-pub use std::sync::mpsc::{Receiver};
-pub use self::system::{Sender};
-pub use self::system::{Actor};
+pub use self::system::Actor;
+pub use self::system::Sender;
 pub use self::system::{System, SystemEvent};
+pub use std::sync::mpsc::Receiver;

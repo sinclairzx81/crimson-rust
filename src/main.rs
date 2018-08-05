@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------------
 
-crimson-rs - csp experiments in rust
+crimson-rust - csp experiments in rust
 
 The MIT License (MIT)
 
@@ -29,22 +29,31 @@ THE SOFTWARE.
 mod crimson;
 
 use crimson::{Actor, Receiver, Sender, System};
+use std::thread;
 
 type Message = &'static str;
 
 struct A;
 impl Actor<Message> for A {
-    fn run(&mut self, sender: Sender<Message>, _: Receiver<Message>) {
-        sender.send("B", "Hello").unwrap();
-        sender.send("B", "World").unwrap();
+    fn run(self, sender: Sender<Message>, _: Receiver<Message>) {
+        thread::spawn(move || {
+          loop {
+            sender.send("B", "Hello").unwrap();
+            sender.send("B", "World").unwrap();
+          }
+        });
     }
 }
 
-struct B;
+struct B {
+  count: i32
+}
+
 impl Actor<Message> for B {
-    fn run(&mut self, _: Sender<Message>, receiver: Receiver<Message>) {
+    fn run(mut self, _: Sender<Message>, receiver: Receiver<Message>) {
         for message in receiver {
-            println!("B {}", message)
+            println!("B {} {}", self.count, message);
+            self.count += 1;
         }
     }
 }
@@ -52,6 +61,8 @@ impl Actor<Message> for B {
 fn main() {
     let mut system = System::new();
     system.mount("A", Box::new(A));
-    system.mount("B", Box::new(B));
+    system.mount("B", Box::new(B { count: 0 } ));
+    system.mount("B", Box::new(B { count: 0 } ));
+    system.mount("B", Box::new(B { count: 0 } ));
     system.run(|info| println!("{:?}", info));
 }

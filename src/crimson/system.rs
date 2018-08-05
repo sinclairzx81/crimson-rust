@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------------
 
-crimson-rs - csp experiments in rust
+crimson-rust - csp experiments in rust
 
 The MIT License (MIT)
 
@@ -75,7 +75,7 @@ where
     T: Send + 'static,
     A: Actor<T> + Send + 'static,
 {
-    let mut actor = Box::new(actor);
+    let actor = Box::new(actor);
     let (tx0, rx0) = sync_channel::<ActorEvent<T>>(1);
     let (tx1, rx1) = sync_channel::<T>(1);
     thread::spawn(move || {
@@ -106,7 +106,7 @@ pub enum ActorEvent<T> {
 /// type which is intended to be a simple message,
 /// or an enum for more advance message types.
 pub trait Actor<T: Send + 'static> {
-    fn run(&mut self, sender: Sender<T>, receiver: Receiver<T>);
+    fn run(self, sender: Sender<T>, receiver: Receiver<T>);
 }
 
 /// Sender<T>

@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------------
 
-crimson-rs - csp experiments in rust
+crimson-rust - csp experiments in rust
 
 The MIT License (MIT)
 
